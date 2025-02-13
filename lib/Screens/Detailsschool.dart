@@ -1,37 +1,54 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import 'LiveLocation.dart';
-import 'ShowStudentSchool.dart';
+import '../Providers/School_Bus_Parent_Provider.dart';
 
 class Detailsschool extends StatelessWidget {
+  final keyy=GlobalKey<FormState>();
+  final int busId; // ID of the selected bus
+
+  Detailsschool({required this.busId});
+
   @override
   Widget build(BuildContext context) {
+    final busProvider = Provider.of<School_Bus_Parent_Provider>(context,listen: false);
+
+    // Load bus details when the widget is built
+    if (busProvider.buses.isEmpty && !busProvider.isLoading) {
+      busProvider.fetchBusById(busId);
+    }
+
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color(0xFF34D1B2),
-          automaticallyImplyLeading: false, // إزالة الأيقونة
-        ),
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                child: Text('Header'),
-                decoration: BoxDecoration(
-                  color: Color(0xFF34D1B2),
-                ),
+      appBar: AppBar(
+        backgroundColor: Color(0xFF34D1B2),
+        automaticallyImplyLeading: true, // Allow back navigation
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Text('Header'),
+              decoration: BoxDecoration(
+                color: Color(0xFF34D1B2),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-        body: Column(
+      ),
+      body: Form(
+        key: keyy,
+        child: Column(
           children: [
             CustomAppBar(),
-            SizedBox(height: 20), // إضافة مسافة بين CustomAppBar والمحتوى
+            SizedBox(height: 20), // Space between CustomAppBar and content
             Expanded(
-              child: SingleChildScrollView(
+              child: busProvider.isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : busProvider.errorMessage.isNotEmpty
+                  ? Center(child: Text(busProvider.errorMessage))
+                  : SingleChildScrollView(
                 child: Align(
                   alignment: Alignment.center,
                   child: Column(
@@ -54,32 +71,27 @@ class Detailsschool extends StatelessWidget {
                         height: 120,
                       ),
                       SizedBox(height: 20),
-                      Text("Bus Name: Elsalam"),
-                      Text("Code: 01122"),
+                      Text("Bus : ${busProvider.buses[0].name}"),
+                      Text("id: ${busProvider.buses[0].id}"),
                       TextButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => LiveLocation()),
-                          );
+                          // Handle live location
+                          // You can implement your logic here
                         },
                         child: Text(
                           'Live Location',
                           style: TextStyle(color: Color(0xBD1EB597)),
                         ),
                       ),
-                      Text("Driver Name: Mahamed Sayed"),
-                       Text(
-                          'Driver Code: 052207',
-                          style: TextStyle(color: Color(0xBD1EB597)),
-                        ),
-
+                      Text("Driver Name: ${busProvider.buses[0]}"),
+                      Text(
+                        'Driver Code: ${busProvider.buses[0]}',
+                        style: TextStyle(color: Color(0xBD1EB597)),
+                      ),
                       TextButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => Student()),
-                          );
+                          // Handle students
+                          // You can implement your logic here
                         },
                         child: Text(
                           'Students',
@@ -93,6 +105,7 @@ class Detailsschool extends StatelessWidget {
             ),
           ],
         ),
+      ),
     );
   }
 }

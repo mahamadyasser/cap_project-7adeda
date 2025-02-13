@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'SelectBus.dart';
 
 class HomePageparent extends StatelessWidget {
+  final keyy=GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,50 +27,53 @@ class HomePageparent extends StatelessWidget {
             ],
           ),
         ),
-        body: Column(
-            children: [
-              CustomAppBar(), // إضافة CustomAppBar هنا
-              SizedBox(height: 0), // إزالة المسافة بين CustomAppBar و Login
-              SingleChildScrollView(
-                child: Align(
-                  alignment: Alignment(0.8, -2.0), // تعديل قيمة الـ alignment لتحريك الكلمة لليمين
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start, // وضع العناصر في الأعلى
-                    children: [
-                      Text(
-                        "Home Page",
-                        style: TextStyle(fontSize: 32), // حجم النص
-                      ),
-                      SizedBox(height: 8),
-                      Container(
-                        height: 2,
-                        width: 60,
-                        color: Color(0xFF34D1B2),
-                      ),
-                      SizedBox(height: 16),
-                      Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.network("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCvCXrI6MgxpZufAs5YVyOgSonnhQbqq2apg&s",),
-                            SizedBox(height: 16,),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => Selectbus()));
-                              },
-                              child: Text('get Started',style: TextStyle(color:Colors.black),),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFF34D1B2),
-                              ),
-                            ),
-                          ],
+        body: Form(
+          key: keyy,
+          child: Column(
+              children: [
+                CustomAppBar(), // إضافة CustomAppBar هنا
+                SizedBox(height: 0), // إزالة المسافة بين CustomAppBar و Login
+                SingleChildScrollView(
+                  child: Align(
+                    alignment: Alignment(0.8, -2.0), // تعديل قيمة الـ alignment لتحريك الكلمة لليمين
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start, // وضع العناصر في الأعلى
+                      children: [
+                        Text(
+                          "Home Page",
+                          style: TextStyle(fontSize: 32), // حجم النص
                         ),
-                      ),
-                    ],
+                        SizedBox(height: 8),
+                        Container(
+                          height: 2,
+                          width: 60,
+                          color: Color(0xFF34D1B2),
+                        ),
+                        SizedBox(height: 16),
+                        Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.network("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCvCXrI6MgxpZufAs5YVyOgSonnhQbqq2apg&s",),
+                              SizedBox(height: 16,),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => Selectbus()));
+                                },
+                                child: Text('get Started',style: TextStyle(color:Colors.black),),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Color(0xFF34D1B2),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ]
+              ]
+          ),
         ),
     );
   }

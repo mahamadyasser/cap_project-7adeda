@@ -65,12 +65,14 @@ class Login extends StatelessWidget {
                       child: Column(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.symmetric(
+                            padding:  EdgeInsets.symmetric(
                                 horizontal:
                                     16.0), // Padding من الحافة اليمنى واليسرى
                             child: TextFormField(
+                              controller: emailcontroller,
                               decoration: InputDecoration(
-                                labelText: 'Username',
+                                labelText: 'email',
+
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(
                                     color: Color(0xFF34D1B2),
@@ -96,9 +98,12 @@ class Login extends StatelessWidget {
                                 horizontal:
                                     16.0), // Padding من الحافة اليمنى واليسرى
                             child: TextFormField(
+                              controller: passwordcontroller,
                               decoration: InputDecoration(
+
                                 labelText: 'Password',
                                 border: OutlineInputBorder(
+
                                   borderSide: BorderSide(
                                     color: Color(0xFF34D1B2),
                                   ), // تحديد لون البوردر الأخضر
@@ -138,16 +143,17 @@ class Login extends StatelessWidget {
                             width:
                                 double.infinity, // تجعل الزر يأخذ كل العرض المتاح
                             child: ElevatedButton(
-                              onPressed: ()async {
+                              onPressed: () async{
                                 if (keyy.currentState!.validate()) {
                                   await opj.fetchlogin(
                                       email: emailcontroller.text,
-                                      password: passwordcontroller.text);
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePageparent())) ;
-
+                                      password: passwordcontroller.text
+                                  );
                                 }
-
-
+                                if (opj.school_Bus_Model?.status == true) {
+                                  print("Login successful, navigating to home.");
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomePageparent()));
+                                }
                               },
                               child: Text('Login',
                                   style: TextStyle(

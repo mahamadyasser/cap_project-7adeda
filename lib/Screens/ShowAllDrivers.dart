@@ -1,73 +1,99 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../Models/School_Bus_Parent_Model.dart';
+import '../Providers/School_Bus_Parent_Provider.dart';
+import 'DriverProfile.dart';
 
-import 'OneDriver.dart';
+class ShowAllDrivers extends StatelessWidget {
+  final keyy=GlobalKey<FormState>();
 
-class Showalldrivers extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color(0xFF34D1B2),
-          automaticallyImplyLeading: false, // إزالة الأيقونة
-        ),
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                child: Text('Header'),
-                decoration: BoxDecoration(
-                  color: Color(0xFF34D1B2),
-                ),
-              ),
-            ],
-          ),
-        ),
-        body: Column(
-          children: [
-            CustomAppBar(), // إضافة CustomAppBar هنا
-            SizedBox(height: 0), // إزالة المسافة بين CustomAppBar و Login
-            SingleChildScrollView(
-              child: Align(
-                alignment: Alignment(0.8, -2.0), // تعديل قيمة الـ alignment لتحريك الكلمة لليمين
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.network("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkS8v2vSpIzK2HCPWDdfZP3vbvQhEm5fxuwkNENSNSswbBoWScLb0h3GjVFqgZB9FEpSg&usqp=CAU",height: 100,),
-                      SizedBox(height: 20,),
-                      Text("Driver Name"),
-                      TextButton(onPressed:(){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Driver()));
-                      },
-                        child: Text("Show all details",style: TextStyle(color: Color(0xff055c5e)),),
-                      ),
-                      Container(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.network("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkS8v2vSpIzK2HCPWDdfZP3vbvQhEm5fxuwkNENSNSswbBoWScLb0h3GjVFqgZB9FEpSg&usqp=CAU",height: 100,),
-                            SizedBox(height: 20,),
-                            Text("Driver Name"),
-                            TextButton(onPressed:(){
-                                Navigator.push(
-                            context,
-                             MaterialPageRoute(builder: (context) => Driver()));
-                            },
-                              child: Text("Show all details",style: TextStyle(color: Color(0xff055c5e)),),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
+    final driverProvider = Provider.of<DriverProvider>(context);
+
+    // Load drivers when the widget is built
+    if (driverProvider.drivers.isEmpty && !driverProvider.isLoading) {
+      driverProvider.loadDrivers();
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xFF34D1B2),
+        automaticallyImplyLeading: false,
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Text('Header'),
+              decoration: BoxDecoration(
+                color: Color(0xFF34D1B2),
               ),
             ),
           ],
         ),
+      ),
+      body: Form(
+        key: keyy,
+        child: Column(
+          children: [
+            CustomAppBar(),
+            SizedBox(height: 0),
+            driverProvider.isLoading
+                ? Center(child: CircularProgressIndicator())
+                : driverProvider.errorMessage != null
+                ? Center(child: Text(driverProvider.errorMessage!))
+                : Expanded(
+              child: ListView.builder(
+                itemCount: driverProvider.drivers.length,
+                itemBuilder: (context, index) {
+                  final driver = driverProvider.drivers[index];
+                  return DriverCard(driver: driver);
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class DriverCard extends StatelessWidget {
+  final Driver driver;
+
+  DriverCard({required this.driver});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.network(
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkS8v2vSpIzK2HCPWDdfZP3vbvQhEm5fxuwkNENSNSswbBoWScLb0h3GjVFqgZB9FEpSg&usqp=CAU",
+            height: 100,
+          ),
+          SizedBox(height: 20),
+          Text(driver.name),
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DriverProfile(driver: driver), // Pass driver to profile
+                ),
+              );
+            },
+            child: Text(
+              "Show all details",
+              style: TextStyle(color: Color(0xff055c5e)),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -78,7 +104,7 @@ class CustomAppBar extends StatelessWidget {
     return ClipPath(
       clipper: WaveClipper(),
       child: Container(
-        height: MediaQuery.of(context).size.height / 3, // Adjusted height to make it shorter
+        height: MediaQuery.of(context).size.height / 3,
         color: Color(0xFF34D1B2),
       ),
     );
